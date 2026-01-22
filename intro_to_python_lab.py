@@ -50,6 +50,19 @@ def load_file(filename: str) -> list[str]:
     infile.close()
     return lines
 
+def convert_english_to_morse(lines: list[str]) -> str:
+    converted_text = ""
+    for line in lines:
+        line = line.upper()
+        print(repr(line))
+        for char in line:
+            print(repr(char))
+            if char in english_morse_dict:
+                converted_text += english_morse_dict[char] + " " # space to separate morse strings
+            elif char == " " or char == "\n":
+                converted_text += char
+    return converted_text
+
 def main():
     print("Enter -m for english to morse and -t for morse to english.\n"
           "Follow your command with the input file name and output filename.\nCMD>", end="")
@@ -60,8 +73,8 @@ def main():
     lines = load_file(infile_name)
     print(lines)
     if conversion_type == "-m":
-        # TODO: call converted_lines = convert_english_to_morse(lines)
-        pass
+        converted_text = convert_english_to_morse(lines)
+        print("converted text:", converted_text)
     elif conversion_type == "-t":
         # TODO: call converted_lines = convert_morse_to_english(lines)
         pass
