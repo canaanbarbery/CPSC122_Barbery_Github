@@ -3,6 +3,8 @@
 #CPSC 122 - Assignment 1
 #This program takes an image file and can perform alterations to it, like flipping, rotating, and changing color.
 
+import random 
+
 def pretty_print(data):
     for row in data:
         print(row)
@@ -14,9 +16,11 @@ def load_image_data(filename: str):
     with open(filename, "r") as infile:
         for line in infile:
             line = line.strip()
-            x += 1
-            if x < 4:
+            
+            if x < 3:
+                x += 1
                 continue
+            
             vals = line.split(" ")
             
             for i in range(0,len(vals), 3):
@@ -27,12 +31,26 @@ def load_image_data(filename: str):
                 row.append(pixel)
             data.append(row)
             row = []
-
+    
     return data 
 
 def write_image_data(data: list[list[list[int]]], filename: str):
     
+    length = str(len(data))
+    width = str(len(data[0]))
+    max = 0
+    for row in data:
+        for pixel in row:
+            for x in pixel:
+                if x > max:
+                    max = x
+    max = str(max)             
+    
     with open(filename, "w") as outfile:
+        
+        outfile.write("P3\n"
+                      + width + " " + length + "\n"
+                      +max+"\n")
         for row in data:
             for pixel in row:
                 for x in pixel:
@@ -42,6 +60,7 @@ def write_image_data(data: list[list[list[int]]], filename: str):
 
 
 def apply_modification(data: list[list[list[int]]], mod: str):
+    
     if mod == "a":
         
         data = vertical_flip(data)
@@ -53,8 +72,7 @@ def apply_modification(data: list[list[list[int]]], mod: str):
     elif mod == "c":
 
         data = rm_red(data)
-     
-
+    
     elif mod == "d":
 
         data = rm_green(data)
@@ -63,46 +81,45 @@ def apply_modification(data: list[list[list[int]]], mod: str):
         
         data = rm_blue(data)
     
-    # elif mod == "f":
-        
-       
+    elif mod == "f":
+
+        data = neg(data)
     
-    # elif mod == "g":
+    elif mod == "g":
+
+        data = hicont(data)
         
-        
-    
-    # elif mod == "h":
-        
-   
+    elif mod == "h":
+
+        data = noise(data)
     
     elif mod == "i":
         
         data = bw(data)
     
-    # elif mod == "j":
-        
-        
-        
+    elif mod == "j":
 
-    
+        data = blur(data)
+        
+        
     return data 
 
 def vertical_flip(data: list[list[list[int]]]):
     new_data = []
     for row in range(0,len(data)):
         new_data.append(data[len(data)-1-row])
-    pretty_print(new_data)
+    
     return new_data
 
 def horizontal_flip(data: list[list[list[int]]]):
     new_data = []
     new_row = []
-    for row in range(0,len(data)):
-        for pixel in range(0, len(data[row])):
-            new_row.append(data[row][len(data[row])-1-pixel])
+    
+    for row in data:
+        for pixel in range(0,len(row)):
+            new_row.append(row[len(row)-1-pixel])
         new_data.append(new_row)
         new_row = []
-    pretty_print(new_data)
 
     return new_data
 
@@ -111,7 +128,6 @@ def rm_red(data: list[list[list[int]]]):
     for row in data:
         for pixel in row:
             pixel[0] = 0
-    pretty_print(data)
 
     return data
 
@@ -119,8 +135,7 @@ def rm_green(data: list[list[list[int]]]):
 
     for row in data:
         for pixel in row:
-            pixel[2] = 0
-    pretty_print(data)
+            pixel[1] = 0
 
     return data
 
@@ -128,8 +143,42 @@ def rm_blue(data: list[list[list[int]]]):
 
     for row in data:
         for pixel in row:
-            pixel[1] = 0
-    pretty_print(data)
+            pixel[2] = 0
+
+    return data
+
+def neg(data: list[list[list[int]]]):
+
+    for row in data:
+        for pixel in row:
+            for x in range(0,len(pixel)):
+                pixel[x] = abs(pixel[x]-255)
+
+    return data
+
+def hicont(data: list[list[list[int]]]):
+
+    for row in data:
+        for pixel in row:
+            for x in range(0,len(pixel)):
+                if pixel[x] > 127:
+                    pixel[x] = 255
+                else: 
+                    pixel[x] = 0
+
+    return data
+
+def noise(data: list[list[list[int]]]):
+
+    for row in data:
+        for pixel in row:
+            for x in range(0,len(pixel)):
+                noise = random.randint(-50, 50)
+                pixel[x] += noise
+                if pixel[x] > 255:
+                    pixel[x] = 255
+                elif pixel[x] < 0:
+                    pixel[x] = 0
 
     return data
 
@@ -137,12 +186,47 @@ def bw(data: list[list[list[int]]]):
 
     for row in data:
         for pixel in row:
-            average = sum(pixel)/len(pixel)
+            average = sum(pixel)//len(pixel)
             pixel[0] = int(average)
             pixel[1] = int(average)
             pixel[2] = int(average)
 
     return data
+
+def blur(data: list[list[list[int]]]):
+
+    sum_red = 0
+    sum_green = 0
+    sum_blue = 0
+    remainder = len(data) % 5
+    for row in range(0,len(data)):
+        for pixel in range(0,len(data[0]) - remainder,5):
+            
+            for x in range(0,5):
+                
+                sum_red += data[row][pixel+x][0]
+                sum_green += data[row][pixel+x][1]
+                sum_blue += data[row][pixel+x][2]
+
+            for x in range(0,5):
+                
+                data[row][pixel+x][0] = sum_red//5
+                data[row][pixel+x][1] = sum_green//5
+                data[row][pixel+x][2] = sum_blue//5
+            sum_red = 0
+            sum_green = 0
+            sum_blue = 0
+
+
+        for pixel in range(len(data)-remainder, len(data), remainder):
+            for x in range(0,remainder):
+                sum_red += data[row][pixel+x][0]
+            for x in range(0,remainder):
+                data[row][pixel+x][0] = sum_red//remainder
+
+            
+    return data
+            
 
 def start_menu():
     exit_pgm = False
@@ -152,7 +236,6 @@ def start_menu():
     filename = input_file
 
     image_data = load_image_data(input_file)
-    pretty_print(image_data)
     while exit_pgm != True:
         user_input = input("How would you like to edit your image?\n"
                         "\n"
