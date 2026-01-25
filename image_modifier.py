@@ -213,6 +213,7 @@ def blur(data: list[list[list[int]]]):
                 data[row][pixel+x][0] = sum_red//5
                 data[row][pixel+x][1] = sum_green//5
                 data[row][pixel+x][2] = sum_blue//5
+            
             sum_red = 0
             sum_green = 0
             sum_blue = 0
@@ -220,9 +221,16 @@ def blur(data: list[list[list[int]]]):
 
         for pixel in range(len(data)-remainder, len(data), remainder):
             for x in range(0,remainder):
+                
                 sum_red += data[row][pixel+x][0]
+                sum_green += data[row][pixel+x][1]
+                sum_blue += data[row][pixel+x][2]
+
             for x in range(0,remainder):
+                
                 data[row][pixel+x][0] = sum_red//remainder
+                data[row][pixel+x][1] = sum_green//remainder
+                data[row][pixel+x][2] = sum_blue//remainder
 
             
     return data
@@ -230,9 +238,8 @@ def blur(data: list[list[list[int]]]):
 
 def start_menu():
     exit_pgm = False
-    # input_file = input("What image would you like to use? ")     
+    input_file = input("What image would you like to use? ")     
     
-    input_file = "test.ppm"
     filename = input_file
 
     image_data = load_image_data(input_file)
