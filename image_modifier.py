@@ -1,10 +1,9 @@
-#Programmer: Gina Sprint
-# Class: CPSC 122-01, Spring 2026
-# Programming Assignment #1
-# 1/25/26
-# I attempted the bonus
-# 
-# #This program takes an image file and can perform alterations to it, like flipping, rotating, and changing color.
+#Canaan Barbery
+#CPSC 122-01, Spring 2026
+#Programming Assignment #1
+#1/25/26
+#I attempted the bonus
+#This program takes an image file and can perform alterations to it, like flipping, rotating, and changing color.
 
 
 import random 
@@ -26,6 +25,7 @@ with every three numbers being a pixel, every line being a row, and finally the 
     
     row = [] #empty list to be filled with pixel lists
     data = [] #empty list to be filled with row lists
+    
     x = 0
     
     #opens input_file to read
@@ -159,7 +159,7 @@ list are in their opposite position relative to the center of 'data'.
     """
     new_data = [] #empty list to be appended with new row lists
     
-    #loops through each row and appends new_data
+    #loops through data list and appends new_data with new row lists
     for row in range(0, len(data)):
         new_data.append(data[len(data) - 1 - row]) #subtracts one to account for the fact that index starts at 0.
     
@@ -222,7 +222,7 @@ the second integer in every pixel is 0.
     
         data (list): Updated 3D list of pixels and rows.
     """
-    #loops through pixel lists and sets green pixel integers to 0.
+    #loops through row lists and sets green pixel integers to 0.
     for row in data:
         for pixel in row:
             pixel[1] = 0
@@ -241,7 +241,7 @@ the third integer in every pixel is 0.
     
         data (list): Updated 3D list of pixels and rows.
     """
-    #loops through pixel lists and sets blue pixel integers to 0.
+    #loops through row lists and sets blue pixel integers to 0.
     for row in data:
         for pixel in row:
             pixel[2] = 0
@@ -260,7 +260,7 @@ each integer is equal to 255 minus itself.
     
         data (list): Updated 3D list of pixels and rows.
     """
-    #loops through pixel lists and sets all pixel integers to 255 - themselves.
+    #loops through pixel lists and sets all pixel integers to 255 minus themselves.
     for row in data:
         for pixel in row:
             for x in range(0, len(pixel)):
@@ -280,13 +280,18 @@ each integer is either 255, or 0, based on if it is greater than or less than 12
     
         data (list): Updated 3D list of pixels and rows.
     """
-    #loops through row lists 
+    #loops through pixel lists and updates integer values
     for row in data:
         for pixel in row:
             for x in range(0, len(pixel)):
+                
+                #checks if integer value is greater than 127, and updates value appropriately.
                 if pixel[x] > 127:
+                    
                     pixel[x] = 255
+                
                 else: 
+                    
                     pixel[x] = 0
 
     return data
@@ -303,14 +308,20 @@ each integer has a random number between -50 and 50 added to it.
     
         data (list): Updated 3D list of pixels and rows.
     """
+    #loops through pixel lists and adds a random amount to integer values
     for row in data:
         for pixel in row:
             for x in range(0, len(pixel)):
                 noise = random.randint(-50, 50)
-                pixel[x] += noise
+                pixel[x] += noise #adds noise value to integer
+                
+                #prevents new integer values from being above 255 or below 0.
                 if pixel[x] > 255:
+                    
                     pixel[x] = 255
+                
                 elif pixel[x] < 0:
+                    
                     pixel[x] = 0
 
     return data
@@ -327,6 +338,7 @@ each integer is the average of the three integers in a given pixel.
     
         data (list): Updated 3D list of pixels and rows.
     """
+    #loops through row lists, and changes every integer in a pixel to be the average of its integers.
     for row in data:
         for pixel in row:
             average = sum(pixel) // len(pixel)
@@ -351,38 +363,38 @@ and the one pixel to its left and right).
     
         data (list): Updated 3D list of pixels and rows.
     """
-    sum_red, sum_green, sum_blue = 0, 0, 0
+    sum_red, sum_green, sum_blue = 0, 0, 0 #starter sum values for computing averages
+    
+    #loops through pixel lists and changes every RGB integer to the average of itself and the surrounding 4 RGB integers.
     for row in range(0, len(data)):
-        for pixel in range(2, len(data[row]) - 2):
-            
-            for x in range(-2, 3):
-                
+        for pixel in range(2, len(data[row]) - 2):           
+            for x in range(-2, 3): #loops through the previous two pixels and the two subsequent pixels   
+                #sums integer values
                 sum_red += data[row][pixel + x][0]
                 sum_green += data[row][pixel + x][1]
                 sum_blue += data[row][pixel + x][2]
-                
+            
+            #appends each RGB integer with the averages
             data[row][pixel][0] = sum_red // 5
             data[row][pixel][1] = sum_green // 5
             data[row][pixel][2] = sum_blue // 5
             
-            sum_red, sum_green, sum_blue = 0, 0, 0
+            sum_red, sum_green, sum_blue = 0, 0, 0 #resets the RGB sums for each iteration of the loop.
 
-        #edge case 0
+        #edge case 0, loops through the subsequent pixel
         for pixel in range(0, 2):
-
             sum_red += data[row][pixel][0]
             sum_green += data[row][pixel][1]
             sum_blue += data[row][pixel][2]
-
+        
         data[row][0][0] = sum_red // 2
         data[row][0][1] = sum_green // 2
         data[row][0][2] = sum_blue // 2
 
-        sum_red, sum_green, sum_blue = 0, 0, 0
+        sum_red, sum_green, sum_blue = 0, 0, 0 
 
-        #edge case 1
+        #edge case 1, loops through the previous and subsequent pixel.
         for pixel in range(0, 3):
-
             sum_red += data[row][pixel][0]
             sum_green += data[row][pixel][1]
             sum_blue += data[row][pixel][2]
@@ -394,9 +406,8 @@ and the one pixel to its left and right).
         sum_red, sum_green, sum_blue = 0, 0, 0
 
 
-        #edge case -1
+        #edge case -1, loops through the previous and subsequent pixel
         for pixel in range(len(data[row]) - 3, len(data[row])):
-
             sum_red += data[row][pixel][0]
             sum_green += data[row][pixel][1]
             sum_blue += data[row][pixel][2]
@@ -408,7 +419,7 @@ and the one pixel to its left and right).
         sum_red, sum_green, sum_blue = 0, 0, 0
 
 
-        #edge case -0
+        #edge case -0, loops through the subsequent pixel.
         for pixel in range(len(data[row]) - 2, len(data[row])):
 
             sum_red += data[row][pixel][0]
@@ -442,12 +453,14 @@ def start_menu():
     """Starts the program, giving the user an option to input a filename, 
 apply modifications to that file, or exit the program.
     """
-    exit_pgm = False
-    input_file = input("What image would you like to use? ")     
     
+    
+    input_file = input("What image would you like to use? ") #accepts user input for filename.
     filename = input_file
-
-    image_data = load_image_data(input_file)
+    
+    image_data = load_image_data(input_file) #converts file data to 3D list.
+    
+    #pints menu
     print("How would you like to edit your image?\n"
                         "\n"
                         "a) Flip the image vertically\n"
@@ -461,10 +474,13 @@ apply modifications to that file, or exit the program.
                         "i) Apply a gray scale\n"
                         "j) Apply a horizontal blur\n"
                         "k) Save and exit")
-    while exit_pgm != True:
+    
+    exit_pgm = False #prevents program from closing.
+    while exit_pgm == False:
         
         user_input = input("> ")
         
+        #accepts user input and appropriately prints progress message, applies modifications, changes filename, and writes data to new file.
         if user_input == "a":
             print("Flipping vertically...")
             image_data = apply_modification(image_data, user_input)
@@ -525,6 +541,7 @@ apply modifications to that file, or exit the program.
             image_data = apply_modification(image_data, user_input)
             write_image_data(image_data, filename)
         
+        #exits program
         elif user_input == "k":
             print("Exiting program...")
             exit_pgm = True
