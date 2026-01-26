@@ -21,8 +21,7 @@ with every three numbers being a pixel, every line being a row, and finally the 
 
     Returns:
         data (list): 3D list of pixels and rows.
-    """
-    
+    """    
     row = [] #empty list to be filled with pixel lists
     data = [] #empty list to be filled with row lists
     
