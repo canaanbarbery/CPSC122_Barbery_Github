@@ -4,8 +4,6 @@
 #1/25/26
 #I attempted the bonus
 #This program takes an image file and can perform alterations to it, like flipping, rotating, and changing color.
-
-
 import random 
 
 # def pretty_print(data):
@@ -17,13 +15,13 @@ def load_image_data(filename: str) -> list[list[list[int]]]:
 with every three numbers being a pixel, every line being a row, and finally the both lists being one large list.
 
     Args: 
-        input_file (str): Name of the file whose data is being appended into lists.
+        filename (str): Name of the file whose data is being appended into lists.
 
     Returns:
         data (list): 3D list of pixels and rows.
     """    
-    row = [] #empty list to be filled with pixel lists
-    data = [] #empty list to be filled with row lists
+    row = [] 
+    data = [] 
     
     x = 0
     
@@ -61,13 +59,12 @@ def write_image_data(data: list[list[list[int]]], filename: str):
 the width and length of the image, and 255.
 
     Args:
-        image_data (list): 3D list of pixels and rows.
+        data (list): 3D list of pixels and rows.
         
         filename (str): name of the file being written
-    """
-    
-    length = str(len(data)) #length of the data
-    width = str(len(data[0])) #width of the daa        
+    """    
+    length = str(len(data)) 
+    width = str(len(data[0]))       
     
     #opens filename to write image_data
     with open(filename, "w") as outfile:
@@ -92,15 +89,14 @@ def apply_modification(data: list[list[list[int]]], mod: str) -> list[list[list[
     
     Args:
         
-        image_data (list): 3D list of pixels and rows.
+        data (list): 3D list of pixels and rows.
         
-        user_input (str): letter that corresponds to a mod function.
+        mod (str): letter that corresponds to a mod function.
          
     Returns:
         
         data (list): Updated 3D list of pixels and rows that replaces 'image_data'.
-    """
-    
+    """    
     if mod == "a":
         
         data = vertical_flip(data)
@@ -156,7 +152,7 @@ list are in their opposite position relative to the center of 'data'.
     
         new_data (list): Updated 3D list of pixels and rows that replaces 'data'.
     """
-    new_data = [] #empty list to be appended with new row lists
+    new_data = [] 
     
     #loops through data list and appends new_data with new row lists
     for row in range(0, len(data)):
@@ -176,8 +172,8 @@ list are in their opposite position relative to the center of the row.
     
         new_data (list): Updated 3D list of pixels and rows that replaces 'data'.
     """
-    new_data = [] #empty list to be filled with new_row lists
-    new_row = [] #empty list to be filled with new pixel lists
+    new_data = []
+    new_row = [] 
     
     #loops through row lists and appends new_row with new pixel lists
     for row in data:
@@ -459,7 +455,7 @@ apply modifications to that file, or exit the program.
     
     image_data = load_image_data(input_file) #converts file data to 3D list.
     
-    #pints menu
+    #prints menu
     print("How would you like to edit your image?\n"
                         "\n"
                         "a) Flip the image vertically\n"
